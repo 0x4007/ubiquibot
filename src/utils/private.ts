@@ -5,43 +5,10 @@ import { Context } from "probot";
 import { fromConfig as config } from "./helpers";
 import { DefaultConfiguration, RepositoryConfiguration, OrganizationConfiguration, ImportedConfigurations } from "./private.d";
 
-const CONFIGURATION_PATH = "ubiquibot-config";
-const PRIVATE_KEY_PATH = ".github/ubiquibot-config.yml";
+// const CONFIGURATION_PATH = "ubiquibot-config";
+const CONFIGURATION_PATH = ".github/ubiquibot.yml";
 const PRIVATE_KEY_NAME = "private-key-encrypted";
 const PRIVATE_KEY_PREFIX = "HSK_";
-
-export const getConfigSuperset = async (context: Context, type: "org"): Promise<string | undefined> => {
-  const payload = context.payload as Payload;
-  let repositoryName = payload.repository.name;
-  let ownerLogin = payload.repository.owner.login;
-
-  if (type === "org") {
-    repositoryName = CONFIGURATION_PATH;
-    const login = payload.organization?.login;
-    if (login) {
-      ownerLogin = login;
-    }
-  }
-
-  if (!repositoryName || !ownerLogin) {
-    return undefined;
-  }
-
-  try {
-    const { data } = await context.octokit.rest.repos.getContent({
-      owner: ownerLogin,
-      repo: repositoryName,
-      path: PRIVATE_KEY_PATH,
-      mediaType: {
-        format: "raw",
-      },
-    });
-    return data as unknown as string;
-  } catch (error: unknown) {
-    console.error(error);
-    return undefined;
-  }
-};
 
 // defaults
 export const defaultConfiguration = {
@@ -58,6 +25,61 @@ export const defaultConfiguration = {
   "comment-element-pricing": {},
   "default-labels": [],
 } as DefaultConfiguration;
+
+// async function LoadConfigurations(context: Context) {
+
+//    const params: {
+//     owner: "ubiquity";
+//     repo: "ubiquibot";
+//     path: ".github/config.yml";
+//   } = context.repo({
+//     path: CONFIGURATION_PATH as ".github/config.yml", // bad typing
+//   });
+
+//   const { data } = await context.octokit.rest.repos.getContent({
+//     owner: params.owner,
+//     repo: params.repo,
+//     path: CONFIGURATION_PATH,
+//     mediaType: {
+//       format: "raw",
+//     },
+//   });
+
+//   return data;
+// }
+
+export const getConfigSuperset = async (context: Context, type: "org"): Promise<string | undefined> => {
+  const payload = context.payload as Payload;
+  let repositoryName = payload.repository.name;
+  let ownerLogin = payload.repository.owner.login;
+
+  if (type === "org") {
+    repositoryName = `.github`;
+    const login = payload.organization?.login;
+    if (login) {
+      ownerLogin = login;
+    }
+  }
+
+  if (!repositoryName || !ownerLogin) {
+    return undefined;
+  }
+
+  try {
+    const { data } = await context.octokit.rest.repos.getContent({
+      owner: ownerLogin,
+      repo: repositoryName,
+      path: CONFIGURATION_PATH,
+      mediaType: {
+        format: "raw",
+      },
+    });
+    return data as unknown as string;
+  } catch (error: unknown) {
+    console.error(error);
+    return undefined;
+  }
+};
 
 export const parseYAML = (data?: string): RepositoryConfiguration => {
   try {
