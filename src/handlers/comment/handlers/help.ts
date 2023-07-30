@@ -28,14 +28,17 @@ export const listAvailableCommands = async (body: string) => {
 };
 
 export const generateHelpMenu = () => {
-  let helpMenu = "### Available commands\n```";
+  let helpMenu = "### Available Commands\n";
 
   userCommands.map((command) => {
     // if first command, add a new line
     if (command.id === userCommands[0].id) {
       helpMenu += `\n`;
-      if (!ASSIGN_COMMAND_ENABLED) return;
+      if (!ASSIGN_COMMAND_ENABLED) {
+        return;
+      }
     }
+
     helpMenu += `- ${command.id}: ${command.description}`;
     // if not last command, add a new line (fixes too much space below)
     if (command.id !== userCommands[userCommands.length - 1].id) {
@@ -43,6 +46,8 @@ export const generateHelpMenu = () => {
     }
   });
 
-  if (!ASSIGN_COMMAND_ENABLED) helpMenu += "```\n***_To assign yourself to an issue, please open a draft pull request that is linked to it._***";
+  if (!ASSIGN_COMMAND_ENABLED) {
+    helpMenu += "\n***_To assign yourself to an issue, please open a draft pull request that is linked to it._***";
+  }
   return helpMenu;
 };
