@@ -37,7 +37,7 @@ export interface ConfigLabel {
 }
 
 // defaults
-export const Config = {
+export const defaultConfiguration = {
   "evm-network-id": 1,
   "base-multiplier": 0,
   "issue-creator-multiplier": 0,
@@ -65,7 +65,7 @@ export const Config = {
   "default-labels": string[];
 };
 
-export type ConfigRepository = typeof Config;
+export type ConfigRepository = typeof defaultConfiguration;
 
 export interface ConfigOrganization extends ConfigRepository {
   "private-key-encrypted"?: string;
@@ -80,7 +80,7 @@ export const parseYAML = (data?: string): ConfigRepository => {
   } catch (error) {
     console.error(error);
   }
-  return Config;
+  return defaultConfiguration;
 };
 
 export const getDefaultConfig = (): ConfigRepository => {
