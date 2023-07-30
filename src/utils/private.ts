@@ -3,33 +3,34 @@ import YAML from "yaml";
 import { Payload } from "../types";
 import { Context } from "probot";
 import { fromConfig as config } from "./helpers";
+import { DefaultConfiguration, RepositoryConfiguration, OrganizationConfiguration, ImportedConfigurations } from "./private.d";
 
-const CONFIGURATION_REPOSITORY = "ubiquibot-config";
+const CONFIGURATION_PATH = "ubiquibot-config";
 const PRIVATE_KEY_PATH = ".github/ubiquibot-config.yml";
 const PRIVATE_KEY_NAME = "private-key-encrypted";
 const PRIVATE_KEY_PREFIX = "HSK_";
 
 export const getConfigSuperset = async (context: Context, type: "org"): Promise<string | undefined> => {
+  const payload = context.payload as Payload;
+  let repositoryName = payload.repository.name;
+  let ownerLogin = payload.repository.owner.login;
+
+  if (type === "org") {
+    repositoryName = CONFIGURATION_PATH;
+    const login = payload.organization?.login;
+    if (login) {
+      ownerLogin = login;
+    }
+  }
+
+  if (!repositoryName || !ownerLogin) {
+    return undefined;
+  }
+
   try {
-    const payload = context.payload as Payload;
-    let repository = payload.repository.name;
-    let owner = payload.repository.owner.login;
-
-    if (type === "org") {
-      repository = CONFIGURATION_REPOSITORY;
-      const login = payload.organization?.login;
-      if (login) {
-        owner = login;
-      }
-    }
-
-    if (!repository || !owner) {
-      return undefined;
-    }
-
     const { data } = await context.octokit.rest.repos.getContent({
-      owner,
-      repo: repository,
+      owner: ownerLogin,
+      repo: repositoryName,
       path: PRIVATE_KEY_PATH,
       mediaType: {
         format: "raw",
@@ -37,15 +38,10 @@ export const getConfigSuperset = async (context: Context, type: "org"): Promise<
     });
     return data as unknown as string;
   } catch (error: unknown) {
+    console.error(error);
     return undefined;
   }
 };
-
-export interface ConfigLabel {
-  name: string;
-  weight: number;
-  value?: number | undefined;
-}
 
 // defaults
 export const defaultConfiguration = {
@@ -62,26 +58,6 @@ export const defaultConfiguration = {
   "comment-element-pricing": {},
   "default-labels": [],
 } as DefaultConfiguration;
-
-interface DefaultConfiguration {
-  "evm-network-id": number;
-  "base-multiplier": number;
-  "issue-creator-multiplier": number;
-  "time-labels": ConfigLabel[];
-  "priority-labels": ConfigLabel[];
-  "auto-pay-mode": boolean;
-  "promotion-comment": string;
-  "analytics-mode": boolean;
-  "incentive-mode": boolean;
-  "max-concurrent-bounties": number;
-  "comment-element-pricing": Record<string, number>;
-  "default-labels": string[];
-}
-
-export type RepositoryConfiguration = DefaultConfiguration;
-export interface OrganizationConfiguration extends DefaultConfiguration {
-  "private-key-encrypted"?: string;
-}
 
 export const parseYAML = (data?: string): RepositoryConfiguration => {
   try {
@@ -136,12 +112,13 @@ export const getScalarKey = async (X25519_PRIVATE_KEY: string | undefined): Prom
 };
 
 export const getConfig = async (context: Context) => {
-  const orgConfig = await getConfigSuperset(context, "org");
-  const repoConfig = await getConfigSuperset(context, "repo");
+  const _organization = await getConfigSuperset(context, "org");
+  const organization: OrganizationConfiguration = parseYAML(_organization);
 
-  const organization: OrganizationConfiguration = parseYAML(orgConfig);
-  const repository: RepositoryConfiguration = parseYAML(repoConfig);
-  const configs = { repository, organization };
+  const _repository = await getConfigSuperset(context, "repo");
+  const repository: RepositoryConfiguration = parseYAML(_repository);
+
+  const configs = { repository, organization } as ImportedConfigurations;
 
   const configData = {
     privateKey: organization && organization[PRIVATE_KEY_NAME] ? await getPrivateKey(organization[PRIVATE_KEY_NAME]) : "",
