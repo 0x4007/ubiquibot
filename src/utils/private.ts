@@ -26,7 +26,7 @@ export const defaultConfiguration = {
   "default-labels": [],
 } as DefaultConfiguration;
 
-// async function LoadConfigurations(context: Context) {
+// async function loadConfigurations(context: Context) {
 
 //    const params: {
 //     owner: "ubiquity";
