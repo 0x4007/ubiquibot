@@ -8,6 +8,7 @@ import { checkPullRequests } from "./assign/auto";
 import { createDevPoolPR } from "./pull-request";
 import { runOnPush } from "./push";
 import { incentivizeComments, incentivizeCreatorComment } from "./payout";
+import { issueCreatedCallback } from './comment/handlers/';
 
 export const processors: Record<string, Handler> = {
   [GithubEvent.ISSUES_OPENED]: {
