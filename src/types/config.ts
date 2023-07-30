@@ -44,13 +44,13 @@ export const UnassignConfigSchema = Type.Object({
 });
 
 export const ModeSchema = Type.Object({
-  autoPayMode: Type.Boolean(),
-  analyticsMode: Type.Boolean(),
-  incentiveMode: Type.Boolean(),
+  autoPay: Type.Boolean(),
+  analytics: Type.Boolean(),
+  incentives: Type.Boolean(),
 });
 
 export const AssignSchema = Type.Object({
-  bountyHunterMax: Type.Number(),
+  maxConcurrentBounties: Type.Number(),
 });
 
 export const LogConfigSchema = Type.Object({

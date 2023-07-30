@@ -63,12 +63,12 @@ export const loadConfig = async (context: Context): Promise<BotConfig> => {
       delay: process.env.TELEGRAM_BOT_DELAY ? Number(process.env.TELEGRAM_BOT_DELAY) : DEFAULT_BOT_DELAY,
     },
     mode: {
-      autoPayMode: autoPayMode,
-      analyticsMode: analyticsMode,
-      incentiveMode: incentiveMode,
+      autoPay: autoPayMode,
+      analytics: analyticsMode,
+      incentives: incentiveMode,
     },
     assign: {
-      bountyHunterMax: maxConcurrentBounties,
+      maxConcurrentBounties: maxConcurrentBounties,
     },
     sodium: {
       privateKey: process.env.X25519_PRIVATE_KEY ?? "",
@@ -81,7 +81,7 @@ export const loadConfig = async (context: Context): Promise<BotConfig> => {
   }
 
   if (botConfig.payout.privateKey == "") {
-    botConfig.mode.autoPayMode = false;
+    botConfig.mode.autoPay = false;
   }
 
   const validate = ajv.compile(BotConfigSchema);

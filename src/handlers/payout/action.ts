@@ -9,7 +9,7 @@ export const handleIssueClosed = async () => {
   const context = getBotContext();
   const {
     payout: { paymentToken, rpc },
-    mode: { autoPayMode },
+    mode: { autoPay: autoPayMode },
   } = getBotConfig();
   const logger = getLogger();
   const payload = context.payload as Payload;

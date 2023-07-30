@@ -7,7 +7,7 @@ const SEVEN_DAYS = 604800; // 7 days in seconds
 export const checkWeeklyUpdate = async () => {
   const { log } = getBotContext();
   const {
-    mode: { analyticsMode },
+    mode: { analytics: analyticsMode },
   } = getBotConfig();
   if (!analyticsMode) {
     log.info(`Skipping to collect the weekly analytics, reason: mode=${analyticsMode}`);

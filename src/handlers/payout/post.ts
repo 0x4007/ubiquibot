@@ -11,7 +11,7 @@ const ItemsToExclude: string[] = [MarkdownItem.BlockQuote];
 export const incentivizeComments = async () => {
   const logger = getLogger();
   const {
-    mode: { incentiveMode },
+    mode: { incentives: incentiveMode },
     price: { baseMultiplier, commentElementPricing },
     payout: { paymentToken, rpc },
   } = getBotConfig();
@@ -76,7 +76,7 @@ export const incentivizeComments = async () => {
 export const incentivizeCreatorComment = async () => {
   const logger = getLogger();
   const {
-    mode: { incentiveMode },
+    mode: { incentives: incentiveMode },
     price: { commentElementPricing, issueCreatorMultiplier },
     payout: { paymentToken, rpc },
   } = getBotConfig();
