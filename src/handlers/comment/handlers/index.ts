@@ -100,13 +100,13 @@ const commandCallback = async (issue_number: number, comment: string, action: st
 export const userCommands: UserCommands[] = [
   {
     id: IssueCommentCommands.ASSIGN,
-    description: "Assign the origin sender to the issue automatically.",
+    description: "Assign yourself to the issue.",
     handler: assign,
     callback: commandCallback,
   },
   {
     id: IssueCommentCommands.UNASSIGN,
-    description: "Unassign the origin sender from the issue automatically.",
+    description: "Unassign yourself from the issue.",
     handler: unassign,
     callback: commandCallback,
   },
@@ -125,19 +125,23 @@ export const userCommands: UserCommands[] = [
   },*/
   {
     id: IssueCommentCommands.MULTIPLIER,
-    description: `Set the bounty payout multiplier for a specific contributor, and provide the reason for why. \n  example usage: "/wallet @user 0.5 'Multiplier reason'"`,
+    description: `Set the bounty payout multiplier for a specific contributor, and provide a reason for why.
+\te.g. '/wallet @user 0.5 "Multiplier reason"'`,
     handler: multiplier,
     callback: commandCallback,
   },
   {
     id: IssueCommentCommands.ALLOW,
-    description: `Set access control. (Admin Only)`,
+    description: `Set access control. Superuser only.`,
     handler: setAccess,
     callback: commandCallback,
   },
   {
     id: IssueCommentCommands.WALLET,
-    description: `<WALLET_ADDRESS | ENS_NAME> <SIGNATURE_HASH>: Register the hunter's wallet address. \n  Your message to sign is: DevPool\n  You can generate SIGNATURE_HASH at https://etherscan.io/verifiedSignatures\n  ex1: /wallet 0x16ce4d863eD687455137576da2A0cbaf4f1E8f76 0xe2a3e34a63f3def2c29605de82225b79e1398190b542be917ef88a8e93ff9dc91bdc3ef9b12ed711550f6d2cbbb50671aa3f14a665b709ec391f3e603d0899a41b\n  ex2: /wallet vitalik.eth 0x75329f883590507e581cd6dfca62680b6cd12e1f1665db8097f9e642ed70025146b5cf9f777dde90c4a9cbd41500a6bf76bc394fd0b0cae2aab09f7a6f30e3b31b\n`,
+    description: `<WALLET_ADDRESS | ENS_NAME> <SIGNATURE_HASH>: Register your wallet address for payments.
+\tYour message to sign is: "DevPool"
+\tYou can generate SIGNATURE_HASH at https://etherscan.io/verifiedSignatures
+\te.g. "/wallet 0x16ce4d863eD687455137576da2A0cbaf4f1E8f76 0xe2a3e34a63f3def2c29605de82225b79e1398190b542be917ef88a8e93ff9dc91bdc3ef9b12ed711550f6d2cbbb50671aa3f14a665b709ec391f3e603d0899a41b"`,
     handler: registerWallet,
     callback: commandCallback,
   },
