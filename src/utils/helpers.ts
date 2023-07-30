@@ -13,67 +13,67 @@ type getsCommentElementPricing = "comment-element-pricing";
 type getsLabels = "time-labels" | "priority-labels";
 
 interface Configs {
-  parsedRepo?: ConfigRepository;
-  parsedOrg?: ConfigOrganization;
-  parsedDefault: ConfigRepository;
+  repository?: ConfigRepository;
+  organization?: ConfigOrganization;
+  // default: ConfigRepository;
 }
 
 export const fromConfig = {
-  getNumber: function getNumberFromConfig(key: getsNumber, { parsedRepo, parsedOrg, parsedDefault }: Configs): number {
-    if (parsedRepo && parsedRepo[key] && !Number.isNaN(Number(parsedRepo[key]))) {
-      return Number(parsedRepo[key]);
-    } else if (parsedOrg && parsedOrg[key] && !Number.isNaN(Number(parsedOrg[key]))) {
-      return Number(parsedOrg[key]);
+  getNumber: function getNumberFromConfig(key: getsNumber, { repository: repository, organization: organization }: Configs): number {
+    if (repository && repository[key] && !Number.isNaN(Number(repository[key]))) {
+      return Number(repository[key]);
+    } else if (organization && organization[key] && !Number.isNaN(Number(organization[key]))) {
+      return Number(organization[key]);
     } else {
-      return Number(parsedDefault[key] || Config[key]);
+      return Number(Config[key]);
     }
   },
-  getLabels: function getLabelsFromConfig(key: getsLabels, { parsedRepo, parsedOrg }: Configs): ConfigLabel[] {
-    if (parsedRepo && parsedRepo[key] && Array.isArray(parsedRepo[key]) && parsedRepo[key].length > 0) {
-      return parsedRepo[key];
-    } else if (parsedOrg && parsedOrg[key] && Array.isArray(parsedOrg[key]) && parsedOrg[key].length > 0) {
-      return parsedOrg[key];
+  getLabels: function getLabelsFromConfig(key: getsLabels, { repository: repository, organization: organization }: Configs): ConfigLabel[] {
+    if (repository && repository[key] && Array.isArray(repository[key]) && repository[key].length > 0) {
+      return repository[key];
+    } else if (organization && organization[key] && Array.isArray(organization[key]) && organization[key].length > 0) {
+      return organization[key];
     } else {
       return Config[key];
     }
   },
   getCommentItemPrice: function getCommentItemPriceFromConfig(
     key: getsCommentElementPricing,
-    { parsedRepo, parsedOrg, parsedDefault }: Configs
+    { repository: repository, organization: organization }: Configs
   ): CommentElementPricing {
-    if (parsedRepo && parsedRepo[key]) {
-      return parsedRepo[key];
-    } else if (parsedOrg && parsedOrg[key]) {
-      return parsedOrg[key];
+    if (repository && repository[key]) {
+      return repository[key];
+    } else if (organization && organization[key]) {
+      return organization[key];
     } else {
-      return parsedDefault[key] || Config[key];
+      return Config[key];
     }
   },
-  getBoolean: function getBooleanFromConfig(key: getsBoolean, { parsedRepo, parsedOrg, parsedDefault }: Configs): boolean {
-    if (parsedRepo && parsedRepo[key] && typeof parsedRepo[key] === "boolean") {
-      return parsedRepo[key];
-    } else if (parsedOrg && parsedOrg[key] && typeof parsedOrg[key] === "boolean") {
-      return parsedOrg[key];
+  getBoolean: function getBooleanFromConfig(key: getsBoolean, { repository: repository, organization: organization }: Configs): boolean {
+    if (repository && repository[key] && typeof repository[key] === "boolean") {
+      return repository[key];
+    } else if (organization && organization[key] && typeof organization[key] === "boolean") {
+      return organization[key];
     } else {
-      return parsedDefault[key] || Config[key];
+      return Config[key];
     }
   },
-  getString: function getStringFromConfig(key: getsString, { parsedRepo, parsedOrg, parsedDefault }: Configs): string {
-    if (parsedRepo && parsedRepo[key] && typeof parsedRepo[key] === "string") {
-      return parsedRepo[key];
-    } else if (parsedOrg && parsedOrg[key] && typeof parsedOrg[key] === "string") {
-      return parsedOrg[key];
+  getString: function getStringFromConfig(key: getsString, { repository: repository, organization: organization }: Configs): string {
+    if (repository && repository[key] && typeof repository[key] === "string") {
+      return repository[key];
+    } else if (organization && organization[key] && typeof organization[key] === "string") {
+      return organization[key];
     } else {
-      return parsedDefault[key] || Config[key];
+      return Config[key];
     }
   },
-  getStrings: function getStringsFromConfig(key: getsArrayOfStrings, { parsedRepo, parsedOrg, parsedDefault }: Configs): string[] {
-    if (parsedRepo && parsedRepo[key]) {
-      return parsedRepo[key];
-    } else if (parsedOrg && parsedOrg[key]) {
-      return parsedOrg[key];
+  getStrings: function getStringsFromConfig(key: getsArrayOfStrings, { repository: repository, organization: organization }: Configs): string[] {
+    if (repository && repository[key]) {
+      return repository[key];
+    } else if (organization && organization[key]) {
+      return organization[key];
     } else {
-      return parsedDefault[key] || Config[key];
+      return Config[key];
     }
   },
 };
