@@ -2,24 +2,35 @@ import _sodium from "libsodium-wrappers";
 import YAML from "yaml";
 import { Payload } from "../types";
 import { Context } from "probot";
-import { readFileSync } from "fs";
 import { fromConfig as config } from "./helpers";
 
-const CONFIG_REPO = "ubiquibot-config";
-const KEY_PATH = ".github/ubiquibot-config.yml";
-const KEY_NAME = "private-key-encrypted";
-const KEY_PREFIX = "HSK_";
+const CONFIGURATION_REPOSITORY = "ubiquibot-config";
+const PRIVATE_KEY_PATH = ".github/ubiquibot-config.yml";
+const PRIVATE_KEY_NAME = "private-key-encrypted";
+const PRIVATE_KEY_PREFIX = "HSK_";
 
-export const getConfigSuperset = async (context: Context, type: "org" | "repo"): Promise<string | undefined> => {
+export const getConfigSuperset = async (context: Context, type: "org"): Promise<string | undefined> => {
   try {
     const payload = context.payload as Payload;
-    const repo = type === "org" ? CONFIG_REPO : payload.repository.name;
-    const owner = type === "org" ? payload.organization?.login : payload.repository.owner.login;
-    if (!repo || !owner) return undefined;
+    let repository = payload.repository.name;
+    let owner = payload.repository.owner.login;
+
+    if (type === "org") {
+      repository = CONFIGURATION_REPOSITORY;
+      const login = payload.organization?.login;
+      if (login) {
+        owner = login;
+      }
+    }
+
+    if (!repository || !owner) {
+      return undefined;
+    }
+
     const { data } = await context.octokit.rest.repos.getContent({
       owner,
-      repo,
-      path: KEY_PATH,
+      repo: repository,
+      path: PRIVATE_KEY_PATH,
       mediaType: {
         format: "raw",
       },
@@ -50,7 +61,9 @@ export const defaultConfiguration = {
   "max-concurrent-bounties": 0,
   "comment-element-pricing": {},
   "default-labels": [],
-} as {
+} as DefaultConfiguration;
+
+interface DefaultConfiguration {
   "evm-network-id": number;
   "base-multiplier": number;
   "issue-creator-multiplier": number;
@@ -63,15 +76,14 @@ export const defaultConfiguration = {
   "max-concurrent-bounties": number;
   "comment-element-pricing": Record<string, number>;
   "default-labels": string[];
-};
+}
 
-export type ConfigRepository = typeof defaultConfiguration;
-
-export interface ConfigOrganization extends ConfigRepository {
+export type RepositoryConfiguration = DefaultConfiguration;
+export interface OrganizationConfiguration extends DefaultConfiguration {
   "private-key-encrypted"?: string;
 }
 
-export const parseYAML = (data?: string): ConfigRepository => {
+export const parseYAML = (data?: string): RepositoryConfiguration => {
   try {
     if (data) {
       const parsedData = YAML.parse(data);
@@ -81,11 +93,6 @@ export const parseYAML = (data?: string): ConfigRepository => {
     console.error(error);
   }
   return defaultConfiguration;
-};
-
-export const getDefaultConfig = (): ConfigRepository => {
-  const defaultConfig = readFileSync(`${__dirname}/../../ubiquibot-config-default.yml`, "utf8");
-  return parseYAML(defaultConfig);
 };
 
 export const getPrivateKey = async (cipherText: string): Promise<string | undefined> => {
@@ -105,7 +112,7 @@ export const getPrivateKey = async (cipherText: string): Promise<string | undefi
     const binCipher = sodium.from_base64(cipherText, sodium.base64_variants.URLSAFE_NO_PADDING);
 
     let walletPrivateKey: string | undefined = sodium.crypto_box_seal_open(binCipher, binPub, binPriv, "text");
-    walletPrivateKey = walletPrivateKey.replace(KEY_PREFIX, "");
+    walletPrivateKey = walletPrivateKey.replace(PRIVATE_KEY_PREFIX, "");
     return walletPrivateKey;
   } catch (error: unknown) {
     return undefined;
@@ -132,19 +139,12 @@ export const getConfig = async (context: Context) => {
   const orgConfig = await getConfigSuperset(context, "org");
   const repoConfig = await getConfigSuperset(context, "repo");
 
-  const parsedOrg: ConfigOrganization = parseYAML(orgConfig);
-  const parsedRepo: ConfigRepository = parseYAML(repoConfig);
-  const parsedDefault: ConfigRepository = getDefaultConfig();
-  const privateKeyDecrypted = parsedOrg && parsedOrg[KEY_NAME] ? await getPrivateKey(parsedOrg[KEY_NAME]) : undefined;
-
-  const configs = {
-    parsedRepo,
-    parsedOrg,
-    parsedDefault,
-  };
+  const organization: OrganizationConfiguration = parseYAML(orgConfig);
+  const repository: RepositoryConfiguration = parseYAML(repoConfig);
+  const configs = { repository, organization };
 
   const configData = {
-    privateKey: privateKeyDecrypted ?? "",
+    privateKey: organization && organization[PRIVATE_KEY_NAME] ? await getPrivateKey(organization[PRIVATE_KEY_NAME]) : "",
 
     evmNetworkId: config.getNumber("evm-network-id", configs),
     baseMultiplier: config.getNumber("base-multiplier", configs),

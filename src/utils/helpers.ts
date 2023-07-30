@@ -1,5 +1,5 @@
 import { CommentElementPricing } from "../types";
-import { ConfigLabel, ConfigOrganization, ConfigRepository, defaultConfiguration } from "./private";
+import { ConfigLabel, OrganizationConfiguration, RepositoryConfiguration, defaultConfiguration } from "./private";
 
 // These are the key names of the properties inside of the configuration.
 // They are used to get the values from the configuration.
@@ -13,9 +13,8 @@ type getsCommentElementPricing = "comment-element-pricing";
 type getsLabels = "time-labels" | "priority-labels";
 
 interface Configs {
-  repository?: ConfigRepository;
-  organization?: ConfigOrganization;
-  // default: ConfigRepository;
+  repository?: RepositoryConfiguration;
+  organization?: OrganizationConfiguration;
 }
 
 export const fromConfig = {
