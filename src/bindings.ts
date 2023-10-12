@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-class Logger extends EventEmitter {
+class LoggerEvents extends EventEmitter {
   debug(message: string): void {
     this.emit('log', { level: 'debug', message });
   }
@@ -22,6 +22,6 @@ class Logger extends EventEmitter {
   }
 }
 
-export function getLogger(): Logger {
-  return new Logger();
+export function getLogger(): LoggerEvents {
+  return new LoggerEvents();
 }
