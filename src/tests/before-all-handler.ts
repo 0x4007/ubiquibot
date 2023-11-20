@@ -1,24 +1,24 @@
 import { Probot, run } from "probot";
 
-import { repoConfig } from "./test-repo-config";
-import { updateConfig, waitForNWebhooks, webhookEventEmitter } from "./utils";
-import { GitHubEvent } from "../types/payload";
 import { bindEvents } from "../bindings/event";
+import { GitHubEvent } from "../types/payload";
+import ubiquibotConfigDefault from "../ubiquibot-config-default";
 import {
-  setAdminUser,
   CustomOctokit,
   getAdminUser,
-  setAdminUsername,
-  repo,
-  owner,
   getAdminUsername,
-  setCollaboratorUser,
   getCollaboratorUser,
-  setCollaboratorUsername,
   getCollaboratorUsername,
+  organizationConfiguration,
+  owner,
+  repo,
+  setAdminUser,
+  setAdminUsername,
+  setCollaboratorUser,
+  setCollaboratorUsername,
   setServer,
-  orgConfig,
 } from "./commands-test";
+import { updateConfig, waitForNWebhooks, webhookEventEmitter } from "./utils";
 
 export function beforeAllHandler(): jest.ProvidesHookCallback {
   return async () => {
@@ -89,7 +89,7 @@ export function beforeAllHandler(): jest.ProvidesHookCallback {
       owner,
       repo: "ubiquibot-config",
       path: ".github/ubiquibot-config.yml",
-      config: orgConfig,
+      config: organizationConfiguration,
     });
     await waitForNWebhooks(1);
     await updateConfig({
@@ -97,7 +97,7 @@ export function beforeAllHandler(): jest.ProvidesHookCallback {
       owner,
       repo,
       path: ".github/ubiquibot-config.yml",
-      config: repoConfig,
+      config: ubiquibotConfigDefault,
     });
     await waitForNWebhooks(1);
   };

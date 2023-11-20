@@ -1,4 +1,5 @@
 module.exports = {
+  coverageDirectory: "coverage",
   "cache": false,
   "maxConcurrency": 1,
   "preset": "ts-jest",
