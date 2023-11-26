@@ -19,7 +19,8 @@ jobs:
         run: yarn
 
       - name: Run Knip
-        run: npx knip --reporter json > knip-output.json
+        run: |
+          npx knip --reporter json > knip-output.json 2> knip-error.log || (echo "Knip failed with exit code $?" && cat knip-error.log && exit 55)
 
       - name: Annotate Pull Request
         run: npx tsx create-annotations.ts
