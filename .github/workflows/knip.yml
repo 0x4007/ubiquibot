@@ -22,6 +22,13 @@ jobs:
         run: |
           npx knip --reporter json > knip-output.json 2> knip-error.log || (echo "Knip failed with exit code $?" && cat knip-error.log && exit 55)
 
+      - name: Upload Knip error log
+        if: failure() # This ensures the step runs only if the previous steps failed
+        uses: actions/upload-artifact@v2
+        with:
+          name: knip-error-log
+          path: knip-error.log
+
       - name: Annotate Pull Request
         run: npx tsx create-annotations.ts
         env:
