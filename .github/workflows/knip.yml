@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Knip
         run: |
-          npx knip --reporter json > knip-output.json 2> knip-error.log || (echo "Knip failed with exit code $?" && cat knip-error.log && exit 55)
+          npx knip --reporter json > knip-output.json
 
       - name: Upload Knip error log
         if: failure() # This ensures the step runs only if the previous steps failed
