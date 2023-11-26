@@ -16,7 +16,7 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: yarn
+        run: yarn add knip tsx
 
       - name: Run Knip
         run: npx knip --reporter json > knip-output.json
