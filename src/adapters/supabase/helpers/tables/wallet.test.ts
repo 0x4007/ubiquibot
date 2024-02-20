@@ -5,8 +5,8 @@ import { GitHubUser } from "../../../../types/payload";
 import { createAdapters } from "../../../adapters";
 const SUPABASE_URL = process.env.SUPABASE_URL;
 if (!SUPABASE_URL) throw new Error("SUPABASE_URL is not defined");
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
-if (!SUPABASE_KEY) throw new Error("SUPABASE_KEY is not defined");
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+if (!SUPABASE_ANON_KEY) throw new Error("SUPABASE_ANON_KEY is not defined");
 
 async function getWalletAddressAndUrlTest() {
   const { wallet } = createAdapters().supabase;

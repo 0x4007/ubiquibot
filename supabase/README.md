@@ -9,7 +9,7 @@
 
 ```
 SUPABASE_URL=XXX
-SUPABASE_KEY=XXX
+SUPABASE_ANON_KEY=XXX
 ```
 
 2.  [The Supabase CLI](https://supabase.com/docs/guides/resources/supabase-cli) available as a node package through the dev dependencies provides tools to develop your project locally and deploy to the Supabase Platform.

@@ -39,7 +39,7 @@ bun start:watch
 - Copy `.env.example` to `.env` (do not rename .env.example, just make a copy)
 - Update the following fields on `.env`:
 - `SUPABASE_URL`: Add your Supabase project URL.
-- `SUPABASE_KEY`: Add your Supabase project API key.
+- `SUPABASE_ANON_KEY`: Add your Supabase project API key.
 - `FOLLOWUP_TIME`: (optional) Set a custom follow-up time (default: 4 days).
 - `DISQUALIFY_TIME`: (optional) Set a custom disqualify time (default: 7 days).
 - `OPENAI_API_HOST`: (optional) Set OpenAI host url (default: https://api.openai.com).
@@ -218,7 +218,7 @@ To test the bot, you can:
 ```
 
 SUPABASE_URL="XXX"
-SUPABASE_KEY="XXX"
+SUPABASE_ANON_KEY="XXX"
 
 ```
 

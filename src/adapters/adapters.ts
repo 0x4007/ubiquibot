@@ -11,7 +11,7 @@ import { Wallet } from "./supabase/helpers/tables/wallet";
 import { env } from "../bindings/env";
 import { Database } from "./supabase/types/database";
 
-export const supabaseClient = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_KEY, {
+export const supabaseClient = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
   auth: { persistSession: false },
 });
 

@@ -39,7 +39,7 @@ jobs:
           # OPENAI_API_KEY:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           # SIMILARITY_THRESHOLD:
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           TEST_ADMIN_PAT: ${{ secrets.TEST_ADMIN_PAT }}
           TEST_ORGANIZATION_NAME: ${{ secrets.TEST_ORGANIZATION_NAME }}

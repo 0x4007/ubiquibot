@@ -51,7 +51,7 @@ const envConfigSchema = T.Object({
   LOG_LEVEL: T.Enum(LogLevel, { default: LogLevel.DEBUG }),
   LOG_RETRY_LIMIT: T.Number({ default: 8 }),
   SUPABASE_URL: T.String({ format: "uri" }),
-  SUPABASE_KEY: T.String(),
+  SUPABASE_ANON_KEY: T.String(),
   PRIVATE_KEY: T.String(),
   APP_ID: T.Number(),
 });
